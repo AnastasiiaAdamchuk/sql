@@ -19,5 +19,30 @@ GROUP BY 1, 2, 3
 ORDER BY 3 DESC
 
 
+-- When did we have the biggest amount of harassment?
+
+--group number of crimes by category by year
+WITH categories AS (
+SELECT
+  major_category,
+  minor_category,
+  year,
+  SUM(value) AS total_number_of_crimes
+FROM `bigquery-public-data.london_crime.crime_by_lsoa` 
+GROUP BY 1, 2, 3
+ORDER BY 3 DESC
+)
+
+--bigest amount of harassment
+SELECT
+  minor_category,
+  year,
+  total_number_of_crimes
+FROM categories
+WHERE minor_category = 'Harassment'
+ORDER BY 3 DESC
+LIMIT 1
+
+
 
 
