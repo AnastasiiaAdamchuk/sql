@@ -29,3 +29,29 @@ SELECT
 FROM `bigquery-public-data.new_york_citibike.citibike_stations` cs
 LEFT JOIN `bigquery-public-data.new_york_citibike.citibike_trips` ct ON cs.station_id = ct.start_station_id
 GROUP BY 1,2
+
+
+--Show station with the biggest amount of trips
+
+WITH bike_trips AS (
+SELECT 
+  cs.name AS station_name,
+  cs.region_id,
+  COUNT(ct.start_station_id) AS total_trips,
+  SUM(ct.tripduration) AS total_trip_duration,
+  AVG(ct.tripduration) AS average_trip_duration,
+  MAX(ct.tripduration) AS maximum_trip_duration,
+  MIN(ct.tripduration) AS minimum_trip_duration,
+  AVG(cs.num_bikes_available) AS total_num_bikes_available
+FROM `bigquery-public-data.new_york_citibike.citibike_stations` cs
+LEFT JOIN `bigquery-public-data.new_york_citibike.citibike_trips` ct ON cs.station_id = ct.start_station_id
+GROUP BY 1,2
+)
+
+SELECT 
+  station_name,
+  MAX(total_trips) AS maximum_total_trip
+FROM bike_trips
+GROUP BY 1
+ORDER BY 2 DESC
+LIMIT 1  
